@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">InfyStore</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="my_order">My Order</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="purchase">Purchase</string>
+    <string name="purchased">Purchased</string>
+    <string name="internet_error">Please check your internet connection</string>
+    <string name="required_email_error" translatable="true">Please enter email address.</string>
+    <string name="required_password_error" translatable="true">Please enter your password.</string>
+    <string name="required_email_valid_error" translatable="true">Please enter valid email address.</string>
+    <string name="proceed">Proceed</string>
+    <string name="cancel">Cancel</string>
+    <string name="logout_message">Are you sure want to logout?</string>
+    <string name="logout_success">You successfully logged out from the InfyStore</string>
+    <string name="purchase_success">Your order is successfully placed</string>
+    <string name="purchase_message">Are you sure want to purchase?</string>
+</resources>

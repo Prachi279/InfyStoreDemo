@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="LinearProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/black</item>
+
+        <!--Only work with determinate progress bar-->
+        <item name="android:progressBackgroundTint" tools:targetApi="lollipop">@color/black</item>
+    </style>
+</resources>
