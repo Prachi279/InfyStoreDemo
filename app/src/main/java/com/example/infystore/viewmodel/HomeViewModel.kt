@@ -56,7 +56,6 @@ class HomeViewModel @Inject constructor(
         if (alList != null) {
             orderList = alList as ArrayList<Product>
         }
-        productList.value
     }
 
     /**
