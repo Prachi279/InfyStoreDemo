@@ -27,7 +27,7 @@ object PreferenceHelper {
             is String? -> edit { it.putString(key, value) }
             is Int -> edit { it.putInt(key, value) }
             is Boolean -> edit { it.putBoolean(key, value) }
-            is Float -> edit({ it.putFloat(key, value) })
+            is Float -> edit { it.putFloat(key, value) }
             is Long -> edit { it.putLong(key, value) }
             else -> throw UnsupportedOperationException("Not yet implemented")
         }
@@ -38,7 +38,7 @@ object PreferenceHelper {
      * [T] is the type of value
      * @param defaultValue optional default value - will take null for strings, false for bool and -1 for numeric values if [defaultValue] is not specified
      */
-    operator inline fun <reified T : Any> SharedPreferences.get(
+    inline operator fun <reified T : Any> SharedPreferences.get(
         key: String,
         defaultValue: T? = null
     ): T? {

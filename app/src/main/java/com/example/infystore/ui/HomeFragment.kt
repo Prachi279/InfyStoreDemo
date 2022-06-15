@@ -8,11 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.infystore.MyApplication
 import com.example.infystore.adapter.ProductAdapter
 import com.example.infystore.databinding.FragmentHomeBinding
 import com.example.infystore.model.Product
-import com.example.infystore.utils.CommonUtils
 import com.example.infystore.utils.Constants
 import com.example.infystore.utils.PrefImpl
 import com.example.infystore.utils.PreferenceHelper.get

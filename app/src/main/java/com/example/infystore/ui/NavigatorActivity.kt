@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.infystore.MyApplication
 import com.example.infystore.utils.Constants
 import com.example.infystore.utils.PreferenceHelper.get
 import dagger.hilt.android.AndroidEntryPoint

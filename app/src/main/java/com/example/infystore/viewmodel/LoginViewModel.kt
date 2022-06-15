@@ -5,7 +5,6 @@ import android.view.View
 import androidx.databinding.ObservableField
 import androidx.lifecycle.*
 import com.google.android.material.textfield.TextInputLayout
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 
 /**

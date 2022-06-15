@@ -2,21 +2,12 @@ package com.example.infystore.utils
 
 import android.content.Context
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import com.example.infystore.MyApplication
 import com.example.infystore.R
-import com.example.infystore.model.Product
-import com.example.infystore.utils.PreferenceHelper.get
-import com.example.infystore.utils.PreferenceHelper.set
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import javax.inject.Inject
 
 /**
  * The CommonUtils method, to create general methods
