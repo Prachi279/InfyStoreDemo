@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,9 +11,10 @@ import com.example.infystore.adapter.ProductAdapter
 import com.example.infystore.databinding.FragmentHomeBinding
 import com.example.infystore.model.Product
 import com.example.infystore.viewmodel.HomeViewModel
-import com.example.infystore.utils.CommonUtils
 import com.example.infystore.utils.Constants
+import com.example.infystore.utils.PrefImpl
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * The DashboardFragment, A Fragment to show ordered list of products
@@ -42,6 +42,12 @@ class DashboardFragment : Fragment() {
      */
     private lateinit var homeViewModel: HomeViewModel
 
+    /**
+     * The prefImpl, An Instance of PrefImpl
+     */
+    @Inject
+    lateinit var prefImpl: PrefImpl
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,6 +55,9 @@ class DashboardFragment : Fragment() {
     ): View {
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        //binding of viewmodel class with xml file variable viewmodel
+        // is compulsory if we want to call any method or perform operations from the xml
+        binding.homeViewModel = homeViewModel
         return binding.root
     }
 
@@ -66,7 +75,7 @@ class DashboardFragment : Fragment() {
      * The initialSetUp method, to set adapter and recyclerview
      */
     private fun initialSetUp() {
-        val orderList: List<Product>? = CommonUtils.getArrayListFromPref(Constants.ORDER_LIST)
+        val orderList: List<Product>? = prefImpl.getArrayListFromPref(Constants.ORDER_LIST)
         orderList.let {
             productAdapter = ProductAdapter(homeViewModel)
             productAdapter.product = it!!
@@ -75,10 +84,10 @@ class DashboardFragment : Fragment() {
                 layoutManager = GridLayoutManager(context, 2)
             }
         }
-        if(orderList?.isEmpty() == true) binding.tvNoDataFound.visibility=View.VISIBLE else binding.tvNoDataFound.visibility=View.GONE
+        if (orderList?.isEmpty() == true) binding.tvNoDataFound.visibility =
+            View.VISIBLE else binding.tvNoDataFound.visibility = View.GONE
         binding.pbTopLinear.visibility = View.GONE
     }
-
 
 
 }

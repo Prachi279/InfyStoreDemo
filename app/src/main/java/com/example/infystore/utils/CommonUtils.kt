@@ -2,6 +2,7 @@ package com.example.infystore.utils
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -15,50 +16,12 @@ import com.example.infystore.utils.PreferenceHelper.get
 import com.example.infystore.utils.PreferenceHelper.set
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import javax.inject.Inject
 
 /**
  * The CommonUtils method, to create general methods
  */
 object CommonUtils {
-
-
-    /**
-     * The saveObjIntoPref method, to save object into preference
-     */
-    fun <T> saveObjIntoPref(data: T, prefName: String) {
-        val gson = Gson()
-        val json: String = gson.toJson(data)
-        MyApplication.prefHelper!![prefName] = json
-    }
-
-
-    /**
-     * The retrieveObjFromPref method, to retrieve object from Preferences according to the given class and return the object
-     */
-    private fun <T> getObjFromPref(prefName: String, className: Class<T>): T? {
-        val gson = Gson()
-        val data: String = MyApplication.prefHelper!![prefName, ""]!!
-        return if (!TextUtils.isEmpty(data)) {
-            val obj = gson.fromJson(data, className)
-            obj
-        } else {
-            null
-        }
-    }
-
-    /**
-     * The getArrayListFromPref method, to convert string to arraylist object
-     */
-    fun getArrayListFromPref(prefName: String): List<Product>? {
-        val gson = Gson()
-        val data: String? = MyApplication.prefHelper!![prefName, ""]!!
-        if (!TextUtils.isEmpty(data)) {
-            val type = object : TypeToken<List<Product?>?>() {}.type
-            return gson.fromJson(data, type)
-        }
-        return null
-    }
-
     /**
      * The isOnline method, to check whether network is available or not
      * @param context

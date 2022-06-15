@@ -2,6 +2,7 @@ package com.example.infystore.ui
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -9,13 +10,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.example.infystore.MyApplication
 import com.example.infystore.R
 import com.example.infystore.databinding.ActivityMainBinding
 import com.example.infystore.utils.CommonUtils
 import com.example.infystore.utils.Constants
+import com.example.infystore.utils.PrefImpl
 import dagger.hilt.android.AndroidEntryPoint
 import com.example.infystore.utils.PreferenceHelper.set
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * The MainActivity, A Base class of Fragments
@@ -27,7 +30,17 @@ class MainActivity : AppCompatActivity() {
      * The binding, MainActivity binding instace
      */
     private lateinit var binding: ActivityMainBinding
-
+    /**
+     *The applicationPref, SharedPreference Instance
+     */
+    @Inject
+    @Named("Pref")
+    lateinit var applicationPref: SharedPreferences
+    /**
+     *The prefImpl, PrefImpl Instance
+     */
+    @Inject
+    lateinit var prefImpl: PrefImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,8 +96,8 @@ class MainActivity : AppCompatActivity() {
      * The cleanPreferences method, to clean the preferences on logout
      */
     private fun cleanPreferences() {
-        MyApplication.prefHelper!![Constants.IS_LOGGED_IN] = false
-        CommonUtils.saveObjIntoPref(null, Constants.ORDER_LIST)
+        applicationPref[Constants.IS_LOGGED_IN] = false
+        prefImpl.saveObjIntoPref(null, Constants.ORDER_LIST)
     }
 
 }

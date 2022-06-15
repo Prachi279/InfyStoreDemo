@@ -11,6 +11,7 @@ import com.example.infystore.model.Product
 import com.example.infystore.repository.ProductRepository
 import com.example.infystore.utils.CommonUtils
 import com.example.infystore.utils.Constants
+import com.example.infystore.utils.PrefImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     application: Application,
-    private val repository: ProductRepository
+    private val repository: ProductRepository,
+    private val prefimpl:PrefImpl
 ) : AndroidViewModel(application) {
     /**
      * The _productRes, A MutableLiveData data instance
@@ -52,7 +54,7 @@ class HomeViewModel @Inject constructor(
             application.applicationContext.getString(R.string.internet_error), Toast.LENGTH_SHORT
         ).show()
 
-        val alList = CommonUtils.getArrayListFromPref(Constants.ORDER_LIST)
+        val alList = prefimpl.getArrayListFromPref(Constants.ORDER_LIST)
         if (alList != null) {
             orderList = alList as ArrayList<Product>
         }
@@ -83,11 +85,13 @@ class HomeViewModel @Inject constructor(
      */
     private fun showPurchaseDialog(view: View, product: Product) {
         val positiveButtonClick = { dialog: DialogInterface, which: Int ->
+            dialog.cancel()
+
+            product.isPurchased = true
             (view as AppCompatTextView).alpha = 0.5F
             (view as AppCompatTextView).isEnabled = false
-            dialog.cancel()
-            product.isPurchased = true
             (view as AppCompatTextView).text = "Purchased"
+
             orderList?.let { orderList!!.add(product) }
             Toast.makeText(
                 view.context,

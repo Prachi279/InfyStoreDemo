@@ -21,8 +21,8 @@
         android:id="@+id/cvImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginStart="2dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="2dp"
         app:cardCornerRadius="5dp"
         app:cardElevation="4dp">
@@ -49,15 +49,15 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:fontFamily="@font/arial_mt"
-                    android:maxLines="2"
                     android:gravity="right"
+                    android:maxLines="2"
                     android:paddingLeft="3dp"
                     android:paddingRight="3dp"
                     android:paddingBottom="2dp"
-                    android:visibility="visible"
                     android:text="@{product.price+`$`}"
                     android:textColor="@color/black"
                     android:textSize="14sp"
+                    android:visibility="visible"
                     tools:text="@string/app_name" />
 
 
@@ -92,10 +92,12 @@
                 android:layout_height="30dp"
                 android:layout_below="@id/flMain"
                 android:layout_gravity="bottom"
+                android:alpha="@{product.purchased? 0.5F : 1F}"
                 android:background="@color/purple_200"
+                android:enabled="@{!product.purchased}"
                 android:gravity="center"
-                android:text="@string/purchase"
                 android:onClick="@{(v)->homeViewModel.onItemClick(v,product)}"
+                android:text="@{product.purchased?@string/purchased:@string/purchase}"
                 android:textColor="@color/white" />
         </RelativeLayout>
 

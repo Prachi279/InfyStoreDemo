@@ -1,6 +1,7 @@
 package com.example.infystore.ui
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -9,12 +10,17 @@ import android.util.Patterns.EMAIL_ADDRESS
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableField
+import androidx.lifecycle.ViewModelProvider
 import com.example.infystore.MyApplication
 import com.example.infystore.R
 import com.example.infystore.databinding.ActivityLoginBinding
 import com.example.infystore.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import com.example.infystore.utils.PreferenceHelper.set
+import com.example.infystore.viewmodel.HomeViewModel
+import com.example.infystore.viewmodel.LoginViewModel
+import javax.inject.Inject
+import javax.inject.Named
 
 
 /**
@@ -28,37 +34,36 @@ class LoginActivity : AppCompatActivity() {
      * The binding instance, A LoginBinding
      */
     private lateinit var binding: ActivityLoginBinding
+
     /**
-     * The emailObs, an observer email field
+     *The applicationPref, SharedPreference Instance
      */
-    var emailObs: ObservableField<String> = ObservableField()
+    @Inject
+    @Named("Pref")
+    lateinit var applicationPref: SharedPreferences
+
     /**
-     * The passwordObs, an observer email field
+     * The loginViewModel, An Instance of LoginViewModel
      */
-    var passwordObs: ObservableField<String> = ObservableField()
+    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
         binding = ActivityLoginBinding.inflate(layoutInflater)
+        //binding of viewmodel class with xml file variable viewmodel is
+        // compulsory if we want to call any method or perform operations from the xml
+        binding.loginViewModel = loginViewModel
         setContentView(binding.root)
-        setUpObservable()
     }
 
-    /**
-     * The setUpObservable method, to observer editable fields
-     */
-    private fun setUpObservable() {
-        emailObs.set(binding.etEmail.text.toString())
-        passwordObs.set(binding.etPassword.text.toString())
-        textChangeListener()
-    }
 
     /**
      * The doOnLogin method, to do operation on login
      */
     fun doOnLogin(view: View) {
         if (isValidated()) {
-            MyApplication.prefHelper!![Constants.IS_LOGGED_IN] = true
+            applicationPref[Constants.IS_LOGGED_IN] = true
             startActivity(Intent(this, MainActivity::class.java))
             finishAffinity()
         }
@@ -68,46 +73,20 @@ class LoginActivity : AppCompatActivity() {
      * The isValidated method, to validate fields
      */
     private fun isValidated(): Boolean {
-        if (TextUtils.isEmpty(emailObs.get().toString().trim())) {
+        if (TextUtils.isEmpty(loginViewModel.emailObs.get().toString().trim())) {
             binding.tilEmail.error = resources.getString(R.string.required_email_error)
             return false
-        } else if (!EMAIL_ADDRESS.matcher(emailObs.get().toString()).matches()) {
+        } else if (!EMAIL_ADDRESS.matcher(loginViewModel.emailObs.get().toString()).matches()) {
             binding.tilEmail.error = resources.getString(R.string.required_email_valid_error)
             return false
-        } else if (TextUtils.isEmpty(passwordObs.get().toString().trim())) {
+        } else if (loginViewModel.passwordObs.get() == null || TextUtils.isEmpty(
+                loginViewModel.passwordObs.get().toString().trim()
+            )
+        ) {
             binding.tilPassword.error = resources.getString(R.string.required_password_error)
             return false
         }
         return true
     }
-
-    /**
-     * The textChangeListener method, set fields on text change
-     */
-    private fun textChangeListener() {
-        binding.etEmail.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                emailObs.set(s.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.tilEmail.error = null
-            }
-
-        })
-
-        binding.etPassword.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                passwordObs.set(s.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.tilPassword.error = null
-            }
-        })
-    }
-
 
 }

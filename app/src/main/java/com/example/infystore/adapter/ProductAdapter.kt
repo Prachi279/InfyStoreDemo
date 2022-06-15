@@ -40,24 +40,6 @@ class ProductAdapter @Inject constructor(private val homeViewModel: HomeViewMode
         fun bind(homeViewModel: HomeViewModel, product: Product) {
             binding.setVariable(BR.homeViewModel, homeViewModel)
             binding.setVariable(BR.product, product)
-            homeViewModel.orderList.let {
-                it!!.forEach { list ->
-                    if (list.id == product.id) {
-                        product.isPurchased = true
-                    }
-                }
-            }
-            when {
-                product.isPurchased -> {
-                    binding.btnPurchase.alpha = 0.5F
-                    binding.btnPurchase.isEnabled = false
-                    binding.btnPurchase.text = "Purchased"
-                }
-                else -> {
-                    binding.btnPurchase.alpha = 1F
-                    binding.btnPurchase.isEnabled = true
-                }
-            }
             binding.executePendingBindings()
         }
 

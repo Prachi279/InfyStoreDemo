@@ -1,5 +1,6 @@
 package com.example.infystore.ui
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +11,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.infystore.MyApplication
 import com.example.infystore.adapter.ProductAdapter
 import com.example.infystore.databinding.FragmentHomeBinding
+import com.example.infystore.model.Product
 import com.example.infystore.utils.CommonUtils
 import com.example.infystore.utils.Constants
+import com.example.infystore.utils.PrefImpl
 import com.example.infystore.utils.PreferenceHelper.get
 import com.example.infystore.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * The HomeFragment class, to show product listing
@@ -42,6 +47,18 @@ class HomeFragment : Fragment() {
      */
     private lateinit var productAdapter: ProductAdapter
 
+    /**
+     *The applicationPref, SharedPreference Instance
+     */
+    @Inject
+    @Named("Pref")
+    lateinit var applicationPref: SharedPreferences
+
+    /**
+     *The prefImpl, PrefImpl Instance
+     */
+    @Inject
+    lateinit var prefImpl: PrefImpl
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,6 +67,9 @@ class HomeFragment : Fragment() {
     ): View {
         homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        //binding of viewmodel class with xml file variable viewmodel
+        // is compulsory if we want to call any method or perform operations from the xml
+        binding.homeViewModel = homeViewModel
         val root: View = binding.root
         return root
     }
@@ -61,8 +81,8 @@ class HomeFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        if(MyApplication.prefHelper!![Constants.IS_LOGGED_IN,false]!!){
-            CommonUtils.saveObjIntoPref(
+        if (applicationPref[Constants.IS_LOGGED_IN, false]!!) {
+            prefImpl.saveObjIntoPref(
                 homeViewModel.orderList,
                 Constants.ORDER_LIST
             )
@@ -79,14 +99,28 @@ class HomeFragment : Fragment() {
      */
     private fun initialSetUp() {
         productAdapter = ProductAdapter(homeViewModel)
+        val orderList: List<Product>? = prefImpl.getArrayListFromPref(Constants.ORDER_LIST)
+
         binding.rvProduct.apply {
             adapter = productAdapter
             layoutManager = GridLayoutManager(context, 2)
         }
 
         homeViewModel.productList.observe(viewLifecycleOwner) { alList ->
+            orderList.let { data ->
+                if (!data.isNullOrEmpty()) {
+                    alList.forEach { item ->
+                        data.map { orderItem ->
+                            if (orderItem.id == item.id) {
+                                item.isPurchased = true
+                            }
+                        }
+                    }
+                }
+            }
             productAdapter.product = alList
             binding.pbTopLinear.visibility = View.GONE
         }
     }
+
 }
