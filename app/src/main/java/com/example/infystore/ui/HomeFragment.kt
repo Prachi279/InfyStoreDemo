@@ -1,17 +1,24 @@
 package com.example.infystore.ui
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.infystore.adapter.ProductAdapter
 import com.example.infystore.databinding.FragmentHomeBinding
 import com.example.infystore.model.Product
+import com.example.infystore.utils.CommonUtils
 import com.example.infystore.utils.Constants
+import com.example.infystore.utils.MyForegrounndService
 import com.example.infystore.utils.PrefImpl
 import com.example.infystore.utils.PreferenceHelper.get
 import com.example.infystore.viewmodel.HomeViewModel
@@ -72,9 +79,11 @@ class HomeFragment : Fragment() {
         return root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
         initialSetUp()
+
     }
 
     override fun onStop() {

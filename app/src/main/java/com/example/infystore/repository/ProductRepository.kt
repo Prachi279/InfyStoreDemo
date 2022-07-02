@@ -1,7 +1,7 @@
 package com.example.infystore.repository
 
 
-import com.example.infystore.networkrepo.APIInterface
+import com.example.infystore.projectrepo.APIInterface
 import javax.inject.Inject
 
 

@@ -1,4 +1,4 @@
-package com.example.infystore.networkrepo
+package com.example.infystore.projectrepo
 import com.example.infystore.model.Product
 import com.example.infystore.utils.Constants
 import retrofit2.Response

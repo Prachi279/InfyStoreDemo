@@ -2,19 +2,26 @@ package com.example.infystore.viewmodel
 
 import android.app.Application
 import android.content.DialogInterface
+import android.content.Intent
+import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.lifecycle.*
 import com.example.infystore.R
 import com.example.infystore.model.Product
+import com.example.infystore.repository.ProductDBRepository
 import com.example.infystore.repository.ProductRepository
-import com.example.infystore.utils.CommonUtils
-import com.example.infystore.utils.Constants
-import com.example.infystore.utils.PrefImpl
+import com.example.infystore.utils.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Math.log
 import javax.inject.Inject
 
 /**
@@ -24,7 +31,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     application: Application,
     private val repository: ProductRepository,
-    private val prefimpl:PrefImpl
+    private val prefimpl: PrefImpl,
+    private val productDBRepository: ProductDBRepository
 ) : AndroidViewModel(application) {
     /**
      * The _productRes, A MutableLiveData data instance
@@ -39,10 +47,14 @@ class HomeViewModel @Inject constructor(
     /**
      * The orderList, An ArrayList Instance
      */
-    var orderList:ArrayList<Product>? = ArrayList<Product>()
+    var orderList: ArrayList<Product>? = ArrayList<Product>()
+
+
+    var prodList: ArrayList<Product>? = ArrayList<Product>()
 
     init {
         doOnInit(application)
+        Log.d("CallSequence", "Init block")
     }
 
     /**
@@ -68,8 +80,45 @@ class HomeViewModel @Inject constructor(
             repository.getProductList().let { response ->
                 if (response.isSuccessful) {
                     _productRes.postValue(response.body())
+                    testHugeRecords(response.body())
+
                 }
             }
+        }
+        Log.d("CurrentThread", Thread.currentThread().toString())
+    }
+
+    /**
+     * The testHugeRecords method, this method is for to test huge records
+     */
+    private suspend fun testHugeRecords(alList: List<Product>?) {
+        for (i in 1..30000) {
+            prodList?.add(Product(i, "Test", "350", "abc", "this is test", false))
+        }
+        //val list = productDBRepository.insertAllData(response.body() as List<Product>)
+        val list = productDBRepository.insertAllData(prodList!!.toList())
+        Log.d(
+            "inserted IDs",
+            "DatabaseIds = " + list.size.toString() + " API-IDs = " + alList?.size
+        )
+        Log.d("CurrentThread", Thread.currentThread().toString())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startMyForegroundService()
+        }
+
+    }
+
+    /**
+     * The startMyForegroundService method, to start foreground service
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun startMyForegroundService() {
+        if (!CommonUtils.foregroundServiceRunning(getApplication<Application>().applicationContext)) {
+            val serviceIntent = Intent(
+                getApplication<Application>().applicationContext,
+                MyForegrounndService2::class.java
+            )
+            getApplication<Application>().applicationContext.startForegroundService(serviceIntent)
         }
     }
 

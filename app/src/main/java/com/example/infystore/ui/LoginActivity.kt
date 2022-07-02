@@ -1,24 +1,27 @@
 package com.example.infystore.ui
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.util.Patterns.EMAIL_ADDRESS
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModelProvider
-import com.example.infystore.MyApplication
+import androidx.work.*
 import com.example.infystore.R
 import com.example.infystore.databinding.ActivityLoginBinding
+import com.example.infystore.utils.CommonUtils
 import com.example.infystore.utils.Constants
-import dagger.hilt.android.AndroidEntryPoint
+import com.example.infystore.utils.MyForegrounndService
+import com.example.infystore.utils.MyWorkManager
 import com.example.infystore.utils.PreferenceHelper.set
-import com.example.infystore.viewmodel.HomeViewModel
 import com.example.infystore.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -57,6 +60,22 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onStart() {
+        super.onStart()
+        /*if (!CommonUtils.foregroundServiceRunning(this)) {
+            val serviceIntent = Intent(this, MyForegrounndService::class.java)
+            startForegroundService(serviceIntent)
+        }*/
+        /* val downloadRequest: WorkRequest =
+             OneTimeWorkRequestBuilder<MyWorkManager>().setConstraints(
+                 Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+             ).build()
+
+         WorkManager
+             .getInstance(applicationContext)
+             .enqueue(downloadRequest)*/
+    }
 
     /**
      * The doOnLogin method, to do operation on login
@@ -68,6 +87,7 @@ class LoginActivity : AppCompatActivity() {
             finishAffinity()
         }
     }
+
 
     /**
      * The isValidated method, to validate fields

@@ -1,10 +1,12 @@
 package com.example.infystore.utils
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.DialogInterface
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.example.infystore.R
@@ -52,9 +54,23 @@ object CommonUtils {
         {
             setTitle(context.resources.getString(R.string.app_name))
             setMessage(message)
-            setPositiveButton(context.getString(R.string.proceed), DialogInterface.OnClickListener(positiveButtonClick))
+            setPositiveButton(
+                context.getString(R.string.proceed),
+                DialogInterface.OnClickListener(positiveButtonClick)
+            )
             setNegativeButton(context.getString(R.string.cancel), negativeButtonClick)
             show()
         }
     }
+
+    fun foregroundServiceRunning(context: Context): Boolean {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in activityManager.getRunningServices(Int.MAX_VALUE)) {
+            if (MyForegrounndService2::class.java.getName() == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
+
 }
