@@ -14,4 +14,5 @@ class ProductDBRepository @Inject constructor(private val productDao: ProductDao
     suspend fun deleteProducts(idList: List<Int>)=productDao.deleteProducts(idList)
     suspend fun deleteAllRecords()=productDao.deleteAllRecords()
     suspend fun getNextRecords(id:Int)=productDao.getNextProductList(id)
+    suspend fun deleteRecorsInRange(firstId:Int,secondId:Int)=productDao.deleteRecordInRange(firstId, secondId)
 }

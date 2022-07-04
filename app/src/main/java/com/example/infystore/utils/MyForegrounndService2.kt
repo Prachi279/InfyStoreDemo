@@ -6,8 +6,11 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
+import android.os.HandlerThread
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.infystore.R
 import com.example.infystore.model.Product
@@ -68,9 +71,14 @@ class MyForegrounndService2 : Service() {
                   }
               }*/
             totalCount = productDBRepository.getTotalCount()
+            Log.d("MyForegroundSerive", "totalCount= " + totalCount)
             updatedCount = totalCount
+            if (!CommonUtils.isOnline(this@MyForegrounndService2)) {
+                dismissService()
+            }
             if (updatedCount == 0) {
                 dismissService()
+                deleteRecords()
             } else {
                 callLimitedFunction(0)
             }
@@ -96,15 +104,17 @@ class MyForegrounndService2 : Service() {
     }
 
     private suspend fun dismissService() {
-        productDBRepository.deleteAllRecords()
-        delay(500L)
-        val count = productDBRepository.getTotalCount()
-        Log.d("MyForegroundSerive", "DismissCount = " + count)
-        //setUpProgress(100)
         delay(500L)
         stopForeground(true)
         stopSelf()
         Log.d("MyForegroundSerive", "Service Dismissed")
+    }
+
+    private suspend fun deleteRecords() {
+        /* productDBRepository.deleteAllRecords()
+         delay(500L)
+         val count = productDBRepository.getTotalCount()
+         Log.d("MyForegroundSerive", "DismissCount = " + count)*/
     }
 
     /**
@@ -147,34 +157,56 @@ class MyForegrounndService2 : Service() {
      }*/
 
     /**
-     * The callLimitedFunction meythod, to upload data in a chunk/based on query limit
+     * The callLimitedFunction meythod, to upload data in a chunk/based on query limit and delete records based on range
      */
     private suspend fun callLimitedFunction(id: Int) {
-        var list = productDBRepository.getNextRecords(id)
-        if (list.isNullOrEmpty()) {
-            dismissService()
-        }
-        list.let {
-            val listIds: List<Int> = list.map { item -> item.id }
-            //Log.d("MyForegroundSerive", "listIds =" + listIds)
-            Log.d("MyForegroundSerive", "LASTId =" + list[listIds.size - 1].id)
-            progressCount += calculateProgress(listIds.size)
-            myRepository.getProductList().let { response ->
-                //Log.d("MyForegroundSerive", "listIds =" + listIds.size)
-                if (response.isSuccessful) {
-                    updatedCount -= listIds.size
-                    setUpProgress(progressCount)
-                    Log.d("MyForegroundSerive", "updatedCount =" + updatedCount)
-                    if (updatedCount == 0) {
-                        dismissService()
-                    } else {
-                        Log.d("MyForegroundSerive", "NEXTID =" + list[listIds.size - 1].id)
-                        callLimitedFunction(list[listIds.size - 1].id)
+        if (CommonUtils.isOnline(this@MyForegrounndService2)) {
+            var list = productDBRepository.getNextRecords(id)
+            if (list.isNullOrEmpty()) {
+                dismissService()
+            }
+            list.let {
+                val listIds: List<Int> = list.map { item ->
+                    item.id
+                }
+                //Log.d("MyForegroundSerive", "listIds =" + listIds)
+                progressCount += calculateProgress(listIds.size)
+                myRepository.getProductList().let { response ->
+                    //Log.d("MyForegroundSerive", "listIds =" + listIds.size)
+                    if (response.isSuccessful) {
+                        updatedCount -= listIds.size
+                        setUpProgress(progressCount)
+                        val numOfDeletedRows: Int = productDBRepository.deleteRecorsInRange(
+                            list[0].id,
+                            list[listIds.size - 1].id
+                        )
+                        Log.d("MyForegroundSerive", "=================================")
+                        Log.d("MyForegroundSerive", "list[0].id= " + list[0].id)
+                        Log.d(
+                            "MyForegroundSerive",
+                            "list[listIds.size - 1].id = " + list[listIds.size - 1].id
+                        )
+                        Log.d(
+                            "MyForegroundSerive",
+                            "name " + list[listIds.size - 1].name
+                        )
+                        Log.d("MyForegroundSerive", "numOfDeletedRows = " + numOfDeletedRows)
+                        Log.d("MyForegroundSerive", "=================================")
+                        Log.d("MyForegroundSerive", "updatedCount =" + updatedCount)
+                        if (updatedCount == 0) {
+                            dismissService()
+                            deleteRecords()
+                        } else {
+                            //Log.d("MyForegroundSerive", "NEXT_ID =" + list[listIds.size - 1].id)
+                            callLimitedFunction(list[listIds.size - 1].id)
+                        }
                     }
                 }
             }
-        }
 
+        } else {
+            dismissService()
+        }
     }
 
 }

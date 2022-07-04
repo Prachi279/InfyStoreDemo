@@ -92,8 +92,22 @@ class HomeViewModel @Inject constructor(
      * The testHugeRecords method, this method is for to test huge records
      */
     private suspend fun testHugeRecords(alList: List<Product>?) {
-        for (i in 1..30000) {
-            prodList?.add(Product(i, "Test", "350", "abc", "this is test", false))
+        for (i in 1..100000) {
+            if(i in 1..20000) {
+                prodList?.add(Product(i, "10", "350", "abc", "this is test", false))
+            }
+            if(i in 20001..40000) {
+                prodList?.add(Product(i, "15", "350", "abc", "this is test", false))
+            }
+            if(i in 40001..60000) {
+                prodList?.add(Product(i, "13", "350", "abc", "this is test", false))
+            }
+            if(i in 60001..80000) {
+                prodList?.add(Product(i, "11", "350", "abc", "this is test", false))
+            }
+            if(i in 80001..100000) {
+                prodList?.add(Product(i, "9", "350", "abc", "this is test", false))
+            }
         }
         //val list = productDBRepository.insertAllData(response.body() as List<Product>)
         val list = productDBRepository.insertAllData(prodList!!.toList())
@@ -103,7 +117,9 @@ class HomeViewModel @Inject constructor(
         )
         Log.d("CurrentThread", Thread.currentThread().toString())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startMyForegroundService()
+            if (CommonUtils.isOnline(getApplication<Application>().applicationContext)) {
+                startMyForegroundService()
+            }
         }
 
     }

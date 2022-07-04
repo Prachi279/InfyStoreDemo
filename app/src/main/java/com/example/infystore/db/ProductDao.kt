@@ -36,6 +36,8 @@ interface ProductDao {
      */
     @Query("SELECT * FROM Product LIMIT " + Constants.LIMIT+";")
     suspend fun getLimitedData(): List<Product>
+    //@Query("SELECT * FROM Product  ORDER BY name ASC LIMIT " + Constants.LIMIT+" ;")
+    //suspend fun getLimitedData(): List<Product>
 
     /**
      * The deleteProduct method, to delete specific method
@@ -56,9 +58,21 @@ interface ProductDao {
     suspend fun deleteAllRecords()
 
     /**
+     * The deleteRecordInRange method, to delete  records in a range
+     */
+    @Query("delete from Product where id BETWEEN (:firstId) AND (:secondId)")
+    suspend fun deleteRecordInRange(firstId:Int,secondId:Int):Int
+
+    /**
      * The getNextProductList method, to get next list of products specific after particular Id
      */
     @Query("SELECT * FROM Product WHERE id > :id LIMIT "+ Constants.LIMIT+";")
     suspend fun getNextProductList(id:Int) : List<Product>
 
+
+    /**
+     * The getNextProductList method, to get next list of products specific after particular Id
+     */
+    //@Query("SELECT * FROM Product WHERE id > :id ORDER BY name ASC LIMIT "+ Constants.LIMIT+";")
+    //suspend fun getNextProductList(id:Int) : List<Product>
 }
