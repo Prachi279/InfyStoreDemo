@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".utils.MyForegrounndService2"></service>
+        <service android:name=".utils.MyForegrounndService3"></service>
 
       <!--  <receiver android:name=".utils.MyBroadcastReceiver"
             android:exported="true"

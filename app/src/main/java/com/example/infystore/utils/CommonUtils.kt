@@ -66,7 +66,7 @@ object CommonUtils {
     fun foregroundServiceRunning(context: Context): Boolean {
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in activityManager.getRunningServices(Int.MAX_VALUE)) {
-            if (MyForegrounndService2::class.java.getName() == service.service.className) {
+            if (MyForegrounndService3::class.java.getName() == service.service.className) {
                 return true
             }
         }

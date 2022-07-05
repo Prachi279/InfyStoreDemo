@@ -92,32 +92,37 @@ class HomeViewModel @Inject constructor(
      * The testHugeRecords method, this method is for to test huge records
      */
     private suspend fun testHugeRecords(alList: List<Product>?) {
-        for (i in 1..100000) {
-            if(i in 1..20000) {
+        /*for (i in 1..50000) {
+            if(i in 1..330) {
                 prodList?.add(Product(i, "10", "350", "abc", "this is test", false))
             }
-            if(i in 20001..40000) {
+            if(i in 331..8000) {
                 prodList?.add(Product(i, "15", "350", "abc", "this is test", false))
             }
-            if(i in 40001..60000) {
+            if(i in 8001..15000) {
                 prodList?.add(Product(i, "13", "350", "abc", "this is test", false))
             }
-            if(i in 60001..80000) {
+            if(i in 15001..30000) {
                 prodList?.add(Product(i, "11", "350", "abc", "this is test", false))
             }
-            if(i in 80001..100000) {
+            if(i in 30001..50000) {
                 prodList?.add(Product(i, "9", "350", "abc", "this is test", false))
             }
         }
         //val list = productDBRepository.insertAllData(response.body() as List<Product>)
         val list = productDBRepository.insertAllData(prodList!!.toList())
+        */
+        val number = productDBRepository.getProducts()
         Log.d(
-            "inserted IDs",
-            "DatabaseIds = " + list.size.toString() + " API-IDs = " + alList?.size
+            "Total Size", number.size.toString()
         )
+        /* Log.d(
+             "inserted IDs",
+             "DatabaseIds = " + list.size.toString() + " API-IDs = " + alList?.size
+         )*/
         Log.d("CurrentThread", Thread.currentThread().toString())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (CommonUtils.isOnline(getApplication<Application>().applicationContext)) {
+            if (CommonUtils.isOnline(getApplication<Application>().applicationContext) && number.isNotEmpty()) {
                 startMyForegroundService()
             }
         }
@@ -132,7 +137,7 @@ class HomeViewModel @Inject constructor(
         if (!CommonUtils.foregroundServiceRunning(getApplication<Application>().applicationContext)) {
             val serviceIntent = Intent(
                 getApplication<Application>().applicationContext,
-                MyForegrounndService2::class.java
+                MyForegrounndService3::class.java
             )
             getApplication<Application>().applicationContext.startForegroundService(serviceIntent)
         }
@@ -150,6 +155,7 @@ class HomeViewModel @Inject constructor(
      */
     private fun showPurchaseDialog(view: View, product: Product) {
         val positiveButtonClick = { dialog: DialogInterface, which: Int ->
+
             dialog.cancel()
 
             product.isPurchased = true

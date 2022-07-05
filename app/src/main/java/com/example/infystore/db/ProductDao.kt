@@ -25,6 +25,9 @@ interface ProductDao {
     @Query("SELECT COUNT(*) FROM Product")
     fun getTotalCount(): Int
 
+    @Query("SELECT COUNT(*) FROM Product where name=:name")
+    fun getTotalCountOfSheet(name:String): Int
+
     /**
      * The insertProduct method, to insert whole arraylist into the database
      */
@@ -69,7 +72,8 @@ interface ProductDao {
     @Query("SELECT * FROM Product WHERE id > :id LIMIT "+ Constants.LIMIT+";")
     suspend fun getNextProductList(id:Int) : List<Product>
 
-
+    @Query("SELECT * FROM Product WHERE id > :id AND name=:name LIMIT "+ Constants.LIMIT+";")
+    suspend fun getNextProductListByName(id:Int,name:String) : List<Product>
     /**
      * The getNextProductList method, to get next list of products specific after particular Id
      */
