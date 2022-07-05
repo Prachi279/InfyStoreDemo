@@ -92,7 +92,7 @@ class HomeViewModel @Inject constructor(
      * The testHugeRecords method, this method is for to test huge records
      */
     private suspend fun testHugeRecords(alList: List<Product>?) {
-        /*for (i in 1..50000) {
+        for (i in 1..50000) {
             if(i in 1..330) {
                 prodList?.add(Product(i, "10", "350", "abc", "this is test", false))
             }
@@ -111,7 +111,6 @@ class HomeViewModel @Inject constructor(
         }
         //val list = productDBRepository.insertAllData(response.body() as List<Product>)
         val list = productDBRepository.insertAllData(prodList!!.toList())
-        */
         val number = productDBRepository.getProducts()
         Log.d(
             "Total Size", number.size.toString()
