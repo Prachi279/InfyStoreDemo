@@ -4,12 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import com.example.infystore.BuildConfig
-import com.example.infystore.adapter.ProductAdapter
 import com.example.infystore.db.ProductDao
 import com.example.infystore.db.ProductDatabase
 import com.example.infystore.repository.ProductRepository
+import com.example.infystore.utils.Constants
 import com.example.infystore.utils.PrefImpl
 import com.example.infystore.utils.PreferenceHelper
 import dagger.Module
@@ -17,8 +16,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -34,11 +35,21 @@ object ProjectRepository {
     @Provides
     fun getBaseUrl() = BuildConfig.BASE_URL
 
-    //we can provide injection for this returned data types here APIInterface
     @Provides
     @Singleton
+    fun getHttpClient(): OkHttpClient{
+        return OkHttpClient.Builder()
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
+    }
+
+    //we can provide injection for this returned data types here APIInterface
+
     fun getRetrofitInstance(): APIInterface =
-        Retrofit.Builder().baseUrl(getBaseUrl()).addConverterFactory(
+        Retrofit.Builder().baseUrl(Constants.baseUrl).client(getHttpClient())
+            .addConverterFactory(
             GsonConverterFactory.create()
         )
             .build().create(APIInterface::class.java)

@@ -7,6 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.example.infystore.BuildConfig
 import com.example.infystore.R
 import com.example.infystore.repository.ProductRepository
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +22,7 @@ class MyWorkManager(private var context: Context, private val workParams: Worker
     lateinit var myRepository: ProductRepository
 
     override suspend fun doWork(): Result {
+        Constants.baseUrl= BuildConfig.BASE_URL
         //showNotification()
         delay(5000L)
         myRepository.getProductList().let { response ->

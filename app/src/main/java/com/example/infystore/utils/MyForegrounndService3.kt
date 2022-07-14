@@ -9,16 +9,19 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.infystore.BuildConfig
 import com.example.infystore.R
 import com.example.infystore.repository.ProductDBRepository
 import com.example.infystore.repository.ProductRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import javax.inject.Named
 
 @AndroidEntryPoint
 class MyForegrounndService3 : Service() {
     @Inject
+    @Named("MongoInstace")
     lateinit var myRepository: ProductRepository
 
     @Inject
@@ -32,6 +35,7 @@ class MyForegrounndService3 : Service() {
     var sheetNames = arrayOf("10", "15", "13", "11", "9")
     var i = 0
     var tempAllCount: Int = 0
+
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")
     }
@@ -70,14 +74,17 @@ class MyForegrounndService3 : Service() {
     private suspend fun uploadData(id: Int, sheetName: String) {
         Log.d("MyForegroundSerive", "name=" + sheetName)
         val productList = productDBRepository.getNextProductListByName(id, sheetName)
+        Log.d("MyForegroundSerive", " productList[0].id=" +  productList[0].id)
+        Log.d("MyForegroundSerive", " productList[productList.size - 1].id=" +  productList[productList.size - 1].id)
         if (productList.isEmpty()) {
             if (sheetCount == totalSheetCount) {
                 sheetCount = 0
                 doOnSheetComplete(id)
             }
         }
-        myRepository.getProductList().let { response ->
-            if (response.isSuccessful) {
+        myRepository.submitData(productList).let { response ->
+            Log.d("MyForegroundSerive",""+response)
+            if (response.code()==200) {
                 val deleteNumberOfRecords = productDBRepository.deleteRecorsInRange(
                     productList[0].id,
                     productList[productList.size - 1].id

@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat.startForegroundService
 import androidx.lifecycle.*
+import com.example.infystore.BuildConfig
 import com.example.infystore.R
 import com.example.infystore.model.Product
 import com.example.infystore.repository.ProductDBRepository
@@ -53,6 +54,7 @@ class HomeViewModel @Inject constructor(
     var prodList: ArrayList<Product>? = ArrayList<Product>()
 
     init {
+        Constants.baseUrl=BuildConfig.BASE_URL
         doOnInit(application)
         Log.d("CallSequence", "Init block")
     }
@@ -92,22 +94,22 @@ class HomeViewModel @Inject constructor(
      * The testHugeRecords method, this method is for to test huge records
      */
     private suspend fun testHugeRecords(alList: List<Product>?) {
-        for (i in 1..50000) {
-            if(i in 1..330) {
+        for (i in 1..100) {
+            if(i in 1..100) {
                 prodList?.add(Product(i, "10", "350", "abc", "this is test", false))
             }
-            if(i in 331..8000) {
+          /*  if(i in 81..190) {
                 prodList?.add(Product(i, "15", "350", "abc", "this is test", false))
             }
-            if(i in 8001..15000) {
+            if(i in 191..380) {
                 prodList?.add(Product(i, "13", "350", "abc", "this is test", false))
             }
-            if(i in 15001..30000) {
+            if(i in 381..650) {
                 prodList?.add(Product(i, "11", "350", "abc", "this is test", false))
             }
-            if(i in 30001..50000) {
+            if(i in 651..1000) {
                 prodList?.add(Product(i, "9", "350", "abc", "this is test", false))
-            }
+            }*/
         }
         //val list = productDBRepository.insertAllData(response.body() as List<Product>)
         val list = productDBRepository.insertAllData(prodList!!.toList())
