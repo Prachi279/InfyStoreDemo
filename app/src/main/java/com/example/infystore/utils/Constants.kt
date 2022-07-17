@@ -9,6 +9,6 @@ object Constants {
     const val MONGO_BASE_URL="http://10.0.2.2:3000"
     const val ORDER_LIST="order_list"
     const val IS_LOGGED_IN="is_loggged_in"
-    const val LIMIT=100
+    const val LIMIT=10
     var baseUrl=BuildConfig.BASE_URL
 }

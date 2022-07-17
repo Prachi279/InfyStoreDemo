@@ -90,6 +90,23 @@ class HomeViewModel @Inject constructor(
         Log.d("CurrentThread", Thread.currentThread().toString())
     }
 
+   /* private fun getCoinDetail(coinId: String) {
+        getCoinDetailUseCase(coinId).onEach { results ->
+            when (results) {
+                is Resource.Success -> {
+                    _state.value = CoinState(data = results.data)
+                }
+                is Resource.Error -> {
+                    _state.value =
+                        CoinState(error = results.message ?: "An unexpected error occured")
+                }
+                is Resource.Loading -> {
+                    _state.value = CoinState(isLoading = true)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }*/
+
     /**
      * The testHugeRecords method, this method is for to test huge records
      */

@@ -72,6 +72,7 @@ class MyForegrounndService3 : Service() {
     }
 
     private suspend fun uploadData(id: Int, sheetName: String) {
+        Log.d("MyForegroundSerive","step 3")
         Log.d("MyForegroundSerive", "name=" + sheetName)
         val productList = productDBRepository.getNextProductListByName(id, sheetName)
         Log.d("MyForegroundSerive", " productList[0].id=" +  productList[0].id)
@@ -85,6 +86,7 @@ class MyForegrounndService3 : Service() {
         myRepository.submitData(productList).let { response ->
             Log.d("MyForegroundSerive",""+response)
             if (response.code()==200) {
+                Log.d("MyForegroundSerive","step 1")
                 val deleteNumberOfRecords = productDBRepository.deleteRecorsInRange(
                     productList[0].id,
                     productList[productList.size - 1].id
@@ -95,9 +97,11 @@ class MyForegrounndService3 : Service() {
                 setUpProgress(calculateSheetProgress(tempAllCount), i, false)
             }
             if (sheetCount != totalSheetCount) {
+                Log.d("MyForegroundSerive","step 2")
                 //Log.d("MyForegroundSerive", "sheetCount=" + sheetCount)
                 uploadData(productList[productList.size - 1].id, sheetNames[i])
             } else if (sheetCount == totalSheetCount) {
+                Log.d("MyForegroundSerive","step 5")
                 setUpProgress(calculateSheetProgress(tempAllCount), i, true)
                 //Log.d("MyForegroundSerive", "sheetCount=" + sheetCount)
                 sheetCount = 0;
